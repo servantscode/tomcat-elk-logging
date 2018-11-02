@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#Start filebeat
+service filebeat start
+
+#Start tomcat
+catalina.sh run
