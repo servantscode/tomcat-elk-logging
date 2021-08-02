@@ -1,6 +1,6 @@
 #Dockerfile
 
-FROM tomcat:9.0.43
+FROM tomcat:10.0.8
 
 LABEL maintainer="greg@servantscode.org"
 
