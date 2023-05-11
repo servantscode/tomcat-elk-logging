@@ -28,18 +28,18 @@ help: ## This help.
 # DOCKER TASKS
 # Build the container
 build: ## Build the container
-	docker.exe build -t servantcode/$(APP_NAME) .
+	docker build -t servantcode/$(APP_NAME) .
 
 build-nc: ## Build the container without caching
-	docker.exe build --no-cache -t servantcode/$(APP_NAME) .
+	docker build --no-cache -t servantcode/$(APP_NAME) .
 
 run: ## Run container on port configured in `config.env`
-	docker.exe run -dit --env-file=./config.env -p=$(PORT):$(PORT) --name="$(APP_NAME)" servantcode/$(APP_NAME)
+	docker run -dit --env-file=./config.env -p=$(PORT):$(PORT) --name="$(APP_NAME)" servantcode/$(APP_NAME)
 
 up: build run ## Run container on port configured in `config.env` (Alias to run)
 
 stop: ## Stop and remove a running container
-	docker.exe stop $(APP_NAME); docker.exe rm $(APP_NAME)
+	docker stop $(APP_NAME); docker rm $(APP_NAME)
 
 release: build-nc publish ## Make a release by building and publishing the `{version}` ans `latest` tagged containers to ECR
 
@@ -48,22 +48,22 @@ publish: repo-login publish-latest publish-version ## Publish the `{version}` an
 
 publish-latest: tag-latest ## Publish the `latest` taged container to ECR
 	@echo 'publish latest to $(DOCKER_REPO)'
-	docker.exe push $(DOCKER_REPO)/servantcode/$(APP_NAME):latest
+	docker push $(DOCKER_REPO)/servantcode/$(APP_NAME):latest
 
 publish-version: tag-version ## Publish the `{version}` taged container to ECR
 	@echo 'publish $(VERSION) to $(DOCKER_REPO)'
-	docker.exe push $(DOCKER_REPO)/servantcode/$(APP_NAME):$(VERSION)
+	docker push $(DOCKER_REPO)/servantcode/$(APP_NAME):$(VERSION)
 
 # Docker tagging
 tag: tag-latest tag-version ## Generate container tags for the `{version}` ans `latest` tags
 
 tag-latest: ## Generate container `{version}` tag
 	@echo 'create tag latest'
-	docker.exe tag $(APP_NAME) $(DOCKER_REPO)/servantcode/$(APP_NAME):latest
+	docker tag $(APP_NAME) $(DOCKER_REPO)/servantcode/$(APP_NAME):latest
 
 tag-version: ## Generate container `latest` tag
 	@echo 'create tag $(VERSION)'
-	docker.exe tag $(APP_NAME) $(DOCKER_REPO)/servantcode/$(APP_NAME):$(VERSION)
+	docker tag $(APP_NAME) $(DOCKER_REPO)/servantcode/$(APP_NAME):$(VERSION)
 
 logs: ## Get logs from running container
 	kubectl.exe logs $(shell kubectl.exe get pods | grep $(APP_NAME) | grep Running | cut -d ' ' -f 1)
